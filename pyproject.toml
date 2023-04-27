@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "store-rest-api"
+version = "0.1.0"
+description = ""
+authors = ["Jonathan Howarth <blueterp@gmail.com>"]
+readme = "README.md"
+packages = [{include = "store_rest_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask = "^2.3.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
