@@ -1,34 +1,50 @@
 from flask import Flask, request
-
+from db import stores, items
+import uuid
+import json
 
 app = Flask(__name__)
-
-stores = [{"name": "walmart", "items": [{"name": "chair", "price": 14.99}]}]
 
 
 @app.route("/store", methods=["GET", "POST"])
 def list_stores():
     if request.method == "POST":
         data = request.get_json()
-        name = data["name"]
-        items = []
-        new_store = {"name": name, "items": items}
-        stores.append(new_store)
+        store_id = uuid.uuid4().hex
+        new_store = {**data, "id": store_id}
+        stores[store_id] = new_store
         return new_store, 201
     return {"stores": stores}
 
 
-@app.route("/store/<string:store_name>/item", methods=["GET", "POST"])
-def create_item(store_name):
+@app.route("/item", methods=["POST"])
+def create_item():
     if request.method == "POST":
         data = request.get_json()
-        for store in stores:
-            if store["name"] == store_name:
-                new_item = {"name": data["name"], "price": data["price"]}
-                store["items"].append(new_item)
+        if data["store_id"] in stores:
+            item_id = uuid.uuid4().hex
+            new_item = {**data, "id": item_id}
+            items[item_id] = new_item
             return new_item, 201
-
-    for store in stores:
-        if store["name"] == store_name:
-            return {"items": store["items"]}
     return {"message": "store not found"}, 404
+
+
+@app.get("/item")
+def get_items():
+    return {"items": items}
+
+
+@app.get("/store/<string:store_id>")
+def get_store_by_id(store_id):
+    try:
+        return stores[store_id]
+    except KeyError:
+        return {"message": "Store not found."}
+
+
+@app.get("/item/<string:item_id>")
+def get_item_by_id(store_id):
+    try:
+        return items[item_id]
+    except KeyError:
+        return {"message": "item not found."}
