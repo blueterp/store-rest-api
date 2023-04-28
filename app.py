@@ -18,13 +18,17 @@ def list_stores():
     return {"stores": stores}
 
 
-@app.route("/store/<string:store_name>/item", methods=["POST"])
+@app.route("/store/<string:store_name>/item", methods=["GET", "POST"])
 def create_item(store_name):
-    data = request.get_json()
+    if request.method == "POST":
+        data = request.get_json()
+        for store in stores:
+            if store["name"] == store_name:
+                new_item = {"name": data["name"], "price": data["price"]}
+                store["items"].append(new_item)
+            return new_item, 201
+
     for store in stores:
         if store["name"] == store_name:
-            new_item = {"name": data["name"], "price": data["price"]}
-            store["items"].append(new_item)
-        return new_item, 201
-
+            return {"items": store["items"]}
     return {"message": "store not found"}, 404
