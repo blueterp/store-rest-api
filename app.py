@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_smorest import abort
 from db import stores, items
 import uuid
 import json
@@ -26,7 +27,7 @@ def create_item():
             new_item = {**data, "id": item_id}
             items[item_id] = new_item
             return new_item, 201
-    return {"message": "store not found"}, 404
+    abort(404, message="Item not found")
 
 
 @app.get("/item")
@@ -39,12 +40,12 @@ def get_store_by_id(store_id):
     try:
         return stores[store_id]
     except KeyError:
-        return {"message": "Store not found."}
+        abort(404, message="Message store not found.")
 
 
 @app.get("/item/<string:item_id>")
-def get_item_by_id(store_id):
+def get_item_by_id(item_id):
     try:
         return items[item_id]
     except KeyError:
-        return {"message": "item not found."}
+        abort(404, message="Message item not found.")
