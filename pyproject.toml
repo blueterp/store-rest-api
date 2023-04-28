@@ -7,8 +7,10 @@ readme = "README.md"
 packages = [{include = "store_rest_api"}]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "<3.12,>=3.8"
 Flask = "^2.3.1"
+yfinance = "^0.2.18"
+scipy = "^1.10.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
